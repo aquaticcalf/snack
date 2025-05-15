@@ -1,0 +1,36 @@
+service bookshop:
+  base-url: https://bookshop.aqclf.xyz/api
+  auth: bearer # this is a enum, should support multiple types of auth, ideally!
+  headers:
+    x-trace-id: string? = generate()
+
+resource book:
+  get /books/{id}:
+    returns book
+    with 200
+  list /books:
+    returns [book]
+    paginate # need to think and define this better
+    with 200
+  create /books:
+    body book.create
+    returns book
+    with 201
+  update /books/{id}:
+    body book.update
+    returns book
+    with 200
+  delete /books/{id}:
+    returns
+    with 204
+
+type book:
+  id: uuid
+  title: string
+  author: string
+  published: date?
+
+type book.create = book - id - published
+type book.update = book - id - published # should i support book.update = book.create ??
+
+# ? -> optional, [type] -> array
